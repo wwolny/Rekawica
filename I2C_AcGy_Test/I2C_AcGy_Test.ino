@@ -15,74 +15,87 @@
 #define TAX (1<<7)
 #define TAY (1<<6)
 #define TAZ (1<<5)
-int AcX,AcY, AcZ;
-int   EX,   EY,   EZ;
 
-bool firstGO;
-int iterator;
+long  accelX,   accelY,   accelZ;
+float gForceX,  gForceY,  gForceZ;
+long  gyroX,    gyroY,    gyroZ;
+float rotX,     rotY,     rotZ;
 
 void setup(){
-  EX=0;
-  EY=0;
-  EZ=0;
-  firstGO = true;
-  iterator =0;
+  Serial.begin(115200);
   Wire.begin();
+  setupMPU();
+}
+void loop(){
+  recordAccelRegisters();
+  recordGyroRegisters();
+  printData();
+  delay(20);
+}
+
+void setupMPU() {
   Wire.beginTransmission(MPU);
   Wire.write(0x6B); 
   Wire.write(0); 
   Wire.endTransmission(true);
   Wire.beginTransmission(MPU);
-  Wire.write(0x1C);
-  Wire.write(MPU_2G);
+  Wire.write(0x1B); 
+  Wire.write(0x00); 
   Wire.endTransmission(true);
-  Serial.begin(230400);
-  /*
   Wire.beginTransmission(MPU);
-  Wire.write(0x1C);
-  Wire.write(TAX|TAY|TAZ|MPU_16G);
-  Wire.requestFrom(MPU,14,true);
-  EX=Wire.read()<<8|Wire.read();
-  EY=Wire.read()<<8|Wire.read();
-  Wire.endTransmission(true);*/
-  /*Wire.beginTransmission(MPU);
-  Wire.write(0x1C);
-  Wire.write(0|0|0|MPU_2G);
-  Wire.requestFrom(MPU,14,true);
-  EX-=int(Wire.read()<<8|Wire.read());
-  EY-=int(Wire.read()<<8|Wire.read());
-  EZ-=int(Wire.read()<<8|Wire.read());
-  Wire.endTransmission(true);*/
-}
-void loop(){
-  if(firstGO){
-    Wire.beginTransmission(MPU);
-    Wire.write(0x1C);
-    Wire.write(0|0|0|MPU_2G);
-    Wire.requestFrom(MPU,14,true);
-    EX-=int(Wire.read()<<8|Wire.read());
-    EY-=int(Wire.read()<<8|Wire.read());
-    EZ-=int(Wire.read()<<8|Wire.read());
-    Wire.endTransmission(true);
-    if(!(EX==0&&EY==0&&EZ==0)) {
-      firstGO=false;
-    }
-  }
-  Wire.beginTransmission(MPU);
-  Wire.write(0x3B);
-  Wire.requestFrom(MPU,14,true);
+  Wire.write(0x1C); 
+  Wire.write(0x00); 
   Wire.endTransmission(true);
-  Serial.println(int(Wire.read()<<8|Wire.read()+EX));//-603
-  Serial.println(int(Wire.read()<<8|Wire.read()+EY));//+371
-  Serial.println(int(Wire.read()<<8|Wire.read()+EZ));//+2267
-  
-  Serial.print(EX);
-  Serial.print('\t');
-  Serial.print(EY);
-  Serial.print('\t');
-  Serial.print(EZ);
-  Serial.print('\n');
-  
-  delay(20);
 }
 
+void recordAccelRegisters() {
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);
+  Wire.endTransmission();
+  Wire.requestFrom(MPU,6); //Request Accel Registers (3B - 40)
+  while(Wire.available() < 6);
+  accelX = Wire.read()<<8|Wire.read(); //Store first two bytes into accelX
+  accelY = Wire.read()<<8|Wire.read(); //Store middle two bytes into accelY
+  accelZ = Wire.read()<<8|Wire.read(); //Store last two bytes into accelZ
+  processAccelData();
+}
+
+void processAccelData(){
+  gForceX = accelX / 16384.0;
+  gForceY = accelY / 16384.0; 
+  gForceZ = accelZ / 16384.0;
+}
+void recordGyroRegisters() {
+  Wire.beginTransmission(MPU); //I2C address of the MPU
+  Wire.write(0x43); //Starting register for Gyro Readings
+  Wire.endTransmission();
+  Wire.requestFrom(MPU,6); //Request Gyro Registers (43 - 48)
+  while(Wire.available() < 6);
+  gyroX = Wire.read()<<8|Wire.read(); //Store first two bytes into accelX
+  gyroY = Wire.read()<<8|Wire.read(); //Store middle two bytes into accelY
+  gyroZ = Wire.read()<<8|Wire.read(); //Store last two bytes into accelZ
+  processGyroData();
+}
+
+void processGyroData() {
+  rotX = gyroX / 131.0;
+  rotY = gyroY / 131.0; 
+  rotZ = gyroZ / 131.0;
+}
+
+void printData() {
+  Serial.print("Gyro (deg)");
+  Serial.print(" X=");
+  Serial.print(rotX);
+  Serial.print(" Y=");
+  Serial.print(rotY);
+  Serial.print(" Z=");
+  Serial.print(rotZ);
+  Serial.print(" Accel (g)");
+  Serial.print(" X=");
+  Serial.print(gForceX);
+  Serial.print(" Y=");
+  Serial.print(gForceY);
+  Serial.print(" Z=");
+  Serial.println(gForceZ);
+}
