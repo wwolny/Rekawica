@@ -20,11 +20,16 @@ long  accelX,   accelY,   accelZ;
 float gForceX,  gForceY,  gForceZ;
 long  gyroX,    gyroY,    gyroZ;
 float rotX,     rotY,     rotZ;
+float outRotX,  outRotY,  outRotZ;
+
 
 void setup(){
   Serial.begin(115200);
   Wire.begin();
   setupMPU();
+  outRotX = 0;
+  outRotY= 0;
+  outRotZ = 0;
 }
 void loop(){
   recordAccelRegisters();
@@ -81,9 +86,19 @@ void processGyroData() {
   rotX = gyroX / 131.0;
   rotY = gyroY / 131.0; 
   rotZ = gyroZ / 131.0;
+  outRotX += rotX;
+  outRotY += rotY;
+  outRotZ += rotZ;
 }
 
 void printData() {
+  Serial.print("GyroStatic (deg)");
+  Serial.print(" X=");
+  Serial.print(outRotX);
+  Serial.print(" Y=");
+  Serial.print(outRotY);
+  Serial.print(" Z=");
+  Serial.print(outRotZ);
   Serial.print("Gyro (deg)");
   Serial.print(" X=");
   Serial.print(rotX);
