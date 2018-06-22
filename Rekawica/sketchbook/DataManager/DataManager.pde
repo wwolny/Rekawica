@@ -23,7 +23,7 @@ void setup() {
   String[] portList = Serial.list();
   String portName = null;
   for(int i=0; i < portList.length; i++) {
-    if(match(portList[i], "ACM0")!=null) {
+    if(match(portList[i], "COM8")!=null) {
       portName = portList[i];
     }
   }
