@@ -1,0 +1,12 @@
+﻿32/33 kanał na jako init 100 powinno coś ruszyć
+ 
+potem trzeba będzie 32 na 200 żeby nie auto
+
+33 kolor
+
+34 wzorek
+ 
+kolejne (od 36) kanały to rotacje
+
+35 szybkość
+
