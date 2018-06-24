@@ -8,30 +8,29 @@ void setup() {
   pinMode(7, OUTPUT);
   digitalWrite(7, HIGH);//init for USART
   delay(2000);
-  DMXSerial.write(1,222);//100); //Sterowanie Auto100/SD/Manual(222+
+  DMXSerial.write(1,222); //Sterowanie Auto100/SD/Manual(222+
   delay(100);
-  DMXSerial.write(2, 100);//Wzorki
+  //DMXSerial.write(2, 100);//Wzorki
   tmp = 0;
 } // setup
 
 
 // loop through the rainbow colors 
-void loop() {
- 
+void loop() { 
   if(tmp >254) { 
-    tmp=10;
+    tmp=0;
   }
   tmp++;
   delay(100);
-  //DMXSerial.write(2, tmp);//WZORKI
+  DMXSerial.write(2, tmp);//WZORKI tmp wszytskie//AUTO:100 losowe wzorki geometryczne
   delay(100);
-  DMXSerial.write(3, 10);//flashing
+  DMXSerial.write(3, 0);//flashing 0 //AUTO: 
   //SZYBKOSC
-  DMXSerial.write(4, 100);//Moving X
+  DMXSerial.write(4, 0);//Moving X
   delay(100);
-  DMXSerial.write(5, 100);//Moving Y
+  DMXSerial.write(5, 0);//Moving Y
   delay(100);
-  DMXSerial.write(6, 30);//Zoom
+  DMXSerial.write(6, 30);//Zoom - 30
   delay(100);
   DMXSerial.write(7, 0);//rozplywanie sie X
   delay(100);
@@ -39,10 +38,10 @@ void loop() {
   delay(100);
   DMXSerial.write(9, 0);//rozplywanie sie Z
   delay(100);
-  DMXSerial.write(10, 100);//size
+  DMXSerial.write(10, 100);//size100
   delay(100);
   DMXSerial.write(11, 0);//falowanie
   delay(100);
-  DMXSerial.write(12, 50);//color
-  delay(1000);
+  DMXSerial.write(12, 0);//color50
+  delay(1000);//delay 1000
 } // loop
