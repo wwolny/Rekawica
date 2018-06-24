@@ -8,11 +8,10 @@ void setup() {
   pinMode(7, OUTPUT);
   digitalWrite(7, HIGH);//init for USART
   delay(2000);
-  DMXSerial.write(1,222);
+  DMXSerial.write(1,222);//100); //Sterowanie Auto100/SD/Manual(222+
   delay(100);
-  DMXSerial.write(2, 200);
+  DMXSerial.write(2, 100);//Wzorki
   tmp = 0;
-  //DMXSerial.write(0,0);
 } // setup
 
 
@@ -24,16 +23,15 @@ void loop() {
   }
   tmp++;
   delay(100);
-  //DMXSerial.write(2, tmp);
-  //PATTERN!!!!
-  DMXSerial.write(3, 10);
+  //DMXSerial.write(2, tmp);//WZORKI
   delay(100);
+  DMXSerial.write(3, 10);//flashing
   //SZYBKOSC
-  DMXSerial.write(4, 100);
+  DMXSerial.write(4, 100);//Moving X
   delay(100);
-  DMXSerial.write(5, tmp);
+  DMXSerial.write(5, 100);//Moving Y
   delay(100);
-  DMXSerial.write(6, 120);//Zoom
+  DMXSerial.write(6, 30);//Zoom
   delay(100);
   DMXSerial.write(7, 0);//rozplywanie sie X
   delay(100);
@@ -46,47 +44,5 @@ void loop() {
   DMXSerial.write(11, 0);//falowanie
   delay(100);
   DMXSerial.write(12, 50);//color
-  
+  delay(1000);
 } // loop
-/*
- * 
-  //ZNACZACY!!!!
-  DMXSerial.write(36, 50);
-  delay(100);
-  //NIEZNACZACY
-  //DMXSerial.write(37,100);
-  delay(100);
-  //NIEZNACZACY
-  //DMXSerial.write(38, 100);
-  delay(100);
- */
-
-/*
-//figura
-   *
-   * Pattern
-   * 1-127 fixed pattern
-   * 128-255 clipping Speed
-   *
-  DMXSerial.write(34, 0);
-  delay(100);
-  //szybkość
-  DMXSerial.write(35, 100);
-  delay(100);
-  //faza - w szerz
-  DMXSerial.write(36,200);
-  delay(100);
-  ////faza- w gore
-  DMXSerial.write(37,100);
-  delay(100);
-  //przesuniecie
-  //DMXSerial.write(38, 100);
-  //delay(100);
-  
-  //DMXSerial.write(36,200);
-  //delay(100);
-  for(int nn=37;nn<59;nn++){
-    delay(1000);
-    DMXSerial.write(nn,0);
-  }*/
-
